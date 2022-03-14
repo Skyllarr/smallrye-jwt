@@ -44,7 +44,8 @@ public class DefaultJWTTokenParser {
     private volatile VerificationKeyResolver keyResolver;
     private volatile DecryptionKeyResolver decryptionKeyResolver;
 
-    public JwtContext parse(final String token, final JWTAuthContextInfo authContextInfo) throws ParseException {
+    public JwtContext parse(final String token, final JWTAuthContextInfo authContextInfo)
+            throws ParseException, UnresolvableKeyException {
 
         String tokenSequence = token;
         ProtectionLevel level = getProtectionLevel(authContextInfo);
@@ -86,7 +87,7 @@ public class DefaultJWTTokenParser {
     }
 
     private JwtContext parseClaims(String token, JWTAuthContextInfo authContextInfo, ProtectionLevel level)
-            throws ParseException {
+            throws ParseException, UnresolvableKeyException {
         try {
             JwtConsumerBuilder builder = new JwtConsumerBuilder();
 
@@ -153,6 +154,9 @@ public class DefaultJWTTokenParser {
             return jwtContext;
         } catch (InvalidJwtException e) {
             if (e.getCause() instanceof UnresolvableKeyException) {
+                if (e.getMessage().contains("SRJWT07005")) {
+                    throw PrincipalMessages.msg.invalidTokenKid();
+                }
                 PrincipalLogging.log.verificationKeyUnresolvable();
                 throw PrincipalMessages.msg.failedToVerifyToken(e.getCause());
             } else {

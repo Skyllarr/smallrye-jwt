@@ -26,6 +26,7 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.jwt.tck.util.SignatureAlgorithm;
 import org.eclipse.microprofile.jwt.tck.util.TokenUtils;
+import org.jose4j.lang.UnresolvableKeyException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -106,7 +107,8 @@ public class TestJsonWebToken {
         validateToken(token, contextInfo);
     }
 
-    private JsonWebToken validateToken(String token, JWTAuthContextInfo contextInfo) throws ParseException {
+    private JsonWebToken validateToken(String token, JWTAuthContextInfo contextInfo)
+            throws ParseException, UnresolvableKeyException {
         JWTCallerPrincipalFactory factory = JWTCallerPrincipalFactory.instance();
         return factory.parse(token, contextInfo);
     }

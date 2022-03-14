@@ -23,6 +23,7 @@ import java.security.PublicKey;
 import javax.crypto.SecretKey;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jose4j.lang.UnresolvableKeyException;
 
 /**
  * A parser to parse a JWT token and convert it to a {@link JsonWebToken}.
@@ -38,7 +39,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken parse(final String token) throws ParseException;
+    public JsonWebToken parse(final String token) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token.
@@ -50,7 +51,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken parse(final String token, JWTAuthContextInfo context) throws ParseException;
+    public JsonWebToken parse(final String token, JWTAuthContextInfo context) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token. The token will be verified and converted to {@link JsonWebToken}.
@@ -61,7 +62,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken verify(final String token, PublicKey key) throws ParseException;
+    public JsonWebToken verify(final String token, PublicKey key) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token. The token will be verified and converted to {@link JsonWebToken}.
@@ -72,7 +73,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken verify(final String token, SecretKey key) throws ParseException;
+    public JsonWebToken verify(final String token, SecretKey key) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token. The token will be verified and converted to {@link JsonWebToken}.
@@ -84,7 +85,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken verify(final String token, String secret) throws ParseException;
+    public JsonWebToken verify(final String token, String secret) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token. The token will be decrypted and converted to {@link JsonWebToken}.
@@ -95,7 +96,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken decrypt(final String token, PrivateKey key) throws ParseException;
+    public JsonWebToken decrypt(final String token, PrivateKey key) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token. The token will be decrypted and converted to {@link JsonWebToken}.
@@ -106,7 +107,7 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken decrypt(final String token, SecretKey key) throws ParseException;
+    public JsonWebToken decrypt(final String token, SecretKey key) throws ParseException, UnresolvableKeyException;
 
     /**
      * Parse JWT token. The token will be decrypted and converted to {@link JsonWebToken}.
@@ -118,6 +119,6 @@ public interface JWTParser {
      * @return JsonWebToken
      * @throws ParseException parse exception
      */
-    public JsonWebToken decrypt(final String token, String secret) throws ParseException;
+    public JsonWebToken decrypt(final String token, String secret) throws ParseException, UnresolvableKeyException;
 
 }

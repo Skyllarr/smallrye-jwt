@@ -21,6 +21,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ServiceLoader;
 
+import org.jose4j.lang.UnresolvableKeyException;
+
 /**
  * The factory class that provides the token string to JWTCallerPrincipal parsing for a given implementation.
  */
@@ -110,5 +112,6 @@ public abstract class JWTCallerPrincipalFactory {
      * @return A JWTCallerPrincipal representation for the token.
      * @throws ParseException on parse or verification failure.
      */
-    public abstract JWTCallerPrincipal parse(String token, JWTAuthContextInfo authContextInfo) throws ParseException;
+    public abstract JWTCallerPrincipal parse(String token, JWTAuthContextInfo authContextInfo)
+            throws ParseException, UnresolvableKeyException;
 }

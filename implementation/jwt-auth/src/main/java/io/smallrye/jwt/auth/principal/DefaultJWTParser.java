@@ -26,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jose4j.lang.UnresolvableKeyException;
 
 import io.smallrye.jwt.algorithm.KeyEncryptionAlgorithm;
 import io.smallrye.jwt.algorithm.SignatureAlgorithm;
@@ -56,17 +57,18 @@ public class DefaultJWTParser implements JWTParser {
         this.callerPrincipalFactory = factory;
     }
 
-    public JsonWebToken parse(final String bearerToken) throws ParseException {
+    public JsonWebToken parse(final String bearerToken) throws ParseException, UnresolvableKeyException {
         return getCallerPrincipalFactory().parse(bearerToken, authContextInfo);
     }
 
     @Override
-    public JsonWebToken parse(String bearerToken, JWTAuthContextInfo newAuthContextInfo) throws ParseException {
+    public JsonWebToken parse(String bearerToken, JWTAuthContextInfo newAuthContextInfo)
+            throws ParseException, UnresolvableKeyException {
         return getCallerPrincipalFactory().parse(bearerToken, newAuthContextInfo);
     }
 
     @Override
-    public JsonWebToken verify(String bearerToken, PublicKey key) throws ParseException {
+    public JsonWebToken verify(String bearerToken, PublicKey key) throws ParseException, UnresolvableKeyException {
         JWTAuthContextInfo newAuthContextInfo = copyAuthContextInfo();
         newAuthContextInfo.setPublicVerificationKey(key);
         if (key instanceof ECPublicKey) {
@@ -78,7 +80,7 @@ public class DefaultJWTParser implements JWTParser {
     }
 
     @Override
-    public JsonWebToken verify(String bearerToken, SecretKey key) throws ParseException {
+    public JsonWebToken verify(String bearerToken, SecretKey key) throws ParseException, UnresolvableKeyException {
         JWTAuthContextInfo newAuthContextInfo = copyAuthContextInfo();
         newAuthContextInfo.setSecretVerificationKey(key);
         setSignatureAlgorithmIfNeeded(newAuthContextInfo, "HS", SignatureAlgorithm.HS256);
@@ -86,12 +88,12 @@ public class DefaultJWTParser implements JWTParser {
     }
 
     @Override
-    public JsonWebToken verify(String bearerToken, String secret) throws ParseException {
+    public JsonWebToken verify(String bearerToken, String secret) throws ParseException, UnresolvableKeyException {
         return verify(bearerToken, KeyUtils.createSecretKeyFromSecret(secret));
     }
 
     @Override
-    public JsonWebToken decrypt(String bearerToken, PrivateKey key) throws ParseException {
+    public JsonWebToken decrypt(String bearerToken, PrivateKey key) throws ParseException, UnresolvableKeyException {
         JWTAuthContextInfo newAuthContextInfo = copyAuthContextInfo();
         newAuthContextInfo.setPrivateDecryptionKey(key);
         if (key instanceof ECPrivateKey) {
@@ -103,7 +105,7 @@ public class DefaultJWTParser implements JWTParser {
     }
 
     @Override
-    public JsonWebToken decrypt(String bearerToken, SecretKey key) throws ParseException {
+    public JsonWebToken decrypt(String bearerToken, SecretKey key) throws ParseException, UnresolvableKeyException {
         JWTAuthContextInfo newAuthContextInfo = copyAuthContextInfo();
         newAuthContextInfo.setSecretDecryptionKey(key);
         setKeyEncryptionAlgorithmIfNeeded(newAuthContextInfo, "A256KW", KeyEncryptionAlgorithm.A256KW);
@@ -111,7 +113,7 @@ public class DefaultJWTParser implements JWTParser {
     }
 
     @Override
-    public JsonWebToken decrypt(String bearerToken, String secret) throws ParseException {
+    public JsonWebToken decrypt(String bearerToken, String secret) throws ParseException, UnresolvableKeyException {
         return decrypt(bearerToken, KeyUtils.createSecretKeyFromSecret(secret));
     }
 

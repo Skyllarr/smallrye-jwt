@@ -17,6 +17,7 @@
 package io.smallrye.jwt.auth.principal;
 
 import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.lang.UnresolvableKeyException;
 
 /**
  * A default implementation of the abstract JWTCallerPrincipalFactory that uses the Keycloak token parsing classes.
@@ -26,7 +27,8 @@ public class DefaultJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory 
     private final DefaultJWTTokenParser parser = new DefaultJWTTokenParser();
 
     @Override
-    public JWTCallerPrincipal parse(final String token, final JWTAuthContextInfo authContextInfo) throws ParseException {
+    public JWTCallerPrincipal parse(final String token, final JWTAuthContextInfo authContextInfo)
+            throws ParseException, UnresolvableKeyException {
 
         JwtContext jwtContext = parser.parse(token, authContextInfo);
         String type = jwtContext.getJoseObjects().get(0).getHeader("typ");

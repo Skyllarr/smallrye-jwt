@@ -83,12 +83,16 @@ public class JWTHttpAuthenticationMechanism implements HttpAuthenticationMechani
             } catch (ParseException e) {
                 if (e.getCause() instanceof UnresolvableKeyException) {
                     MechanismLogging.log.noUsableKey();
-                    return reportInternalError(httpMessageContext);
+                    return httpMessageContext.responseUnauthorized();
                 } else {
                     MechanismLogging.log.unableToValidateBearerToken(e);
                     return httpMessageContext.responseUnauthorized();
                 }
             } catch (Exception e) {
+                if (e instanceof UnresolvableKeyException) {
+                    MechanismLogging.log.noUsableKey();
+                    return httpMessageContext.responseUnauthorized();
+                }
                 MechanismLogging.log.unableToValidateBearerToken(e);
                 return reportInternalError(httpMessageContext);
             }
