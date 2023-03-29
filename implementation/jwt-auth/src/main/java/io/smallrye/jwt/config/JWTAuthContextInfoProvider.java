@@ -708,7 +708,9 @@ public class JWTAuthContextInfoProvider {
 
         if (expGracePeriodSecs > 0) {
             ConfigLogging.log.replacedConfig("smallrye.jwt.expiration.grace", "mp.jwt.verify.clock.skew");
-            contextInfo.setExpGracePeriodSecs(expGracePeriodSecs);
+            contextInfo.setClockSkew(expGracePeriodSecs);
+        } else if (mpJwtVerifyClockSkew > 0) {
+            contextInfo.setClockSkew(mpJwtVerifyClockSkew);
         }
 
         contextInfo.setAlwaysCheckAuthorization(alwaysCheckAuthorization);
@@ -728,7 +730,6 @@ public class JWTAuthContextInfoProvider {
         SmallryeJwtUtils.setContextGroupsPath(contextInfo, groupsPath);
         contextInfo.setMaxTimeToLiveSecs(maxTimeToLiveSecs.orElse(null));
         contextInfo.setTokenAge(mpJwtVerifyTokenAge.orElse(null));
-        contextInfo.setClockSkew(mpJwtVerifyClockSkew);
         contextInfo.setJwksRefreshInterval(jwksRefreshInterval);
         contextInfo.setForcedJwksRefreshInterval(forcedJwksRefreshInterval);
         final Optional<SignatureAlgorithm> resolvedAlgorithm;
